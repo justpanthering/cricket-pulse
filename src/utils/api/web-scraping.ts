@@ -20,7 +20,7 @@ export function getFixturesData() {
       date: $(el).find(".vn-matchDateTime > .vn-matchDate").text().trim(),
       time: $(el).find(".vn-matchDateTime > .vn-matchTime").text().trim(),
     };
-    const teams = [];
+    const teams: Fixture["teams"] = [];
 
     $(el)
       .find(".vn-shedTeam")
@@ -30,7 +30,7 @@ export function getFixturesData() {
           name: $(teamEl).find(".vn-teamName").text().trim(),
         });
       });
-    matches.push({ matchOrder, venue, schedule });
+    matches.push({ matchOrder, venue, schedule, teams });
   });
 
   return matches;

@@ -2,6 +2,10 @@ export interface Fixture {
   matchOrder: string;
   venue: string;
   schedule: { date: string; time: string };
+  teams: {
+    logo: string | undefined;
+    name: string;
+  }[];
 }
 
 export interface Result {
