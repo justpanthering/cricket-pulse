@@ -1,39 +1,10 @@
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import clsx from "clsx";
 import { Menu, X } from "lucide-react";
+import { NavLinks } from "./NavLinks";
 
-function NavLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  const router = useRouter();
-  const isActive = router.pathname === href;
-  return (
-    <Link
-      href={href}
-      className={clsx("hover:text-blue-500", isActive && "text-blue-500")}
-    >
-      {children}
-    </Link>
-  );
-}
-
-function NavLinks() {
-  return (
-    <>
-      <NavLink href="/">Home</NavLink>
-      <NavLink href="/fixtures-and-results">Fixtures and Results</NavLink>
-      <NavLink href="/points-table">About</NavLink>
-    </>
-  );
-}
-
-export default function Header() {
+export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
     <nav className="flex justify-center px-4 py-4 bg-[#f8f9fa] border-b border-[#eaeaea]">
