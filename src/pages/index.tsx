@@ -1,15 +1,18 @@
 import { Hero } from "@/components/Home/Hero";
+import { Fixtures } from "@/components/Home/Fixtures";
 import { Fixture } from "@/types/match";
 import { GetServerSideProps } from "next";
 
 type HomeProps = {
   latestFixture: Fixture | null;
+  fixtures: Fixture[];
 };
 
-export default function Home({ latestFixture }: HomeProps) {
+export default function Home({ latestFixture, fixtures }: HomeProps) {
   return (
     <div className="min-h-screen">
       <Hero latestFixture={latestFixture} />
+      <Fixtures fixtures={fixtures} />
     </div>
   );
 }
@@ -28,6 +31,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     return {
       props: {
         latestFixture,
+        fixtures: data, // Pass all fixtures
       },
     };
   } catch (error: unknown) {
@@ -35,6 +39,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     return {
       props: {
         latestFixture: null,
+        fixtures: [],
       },
     };
   }
