@@ -3,6 +3,7 @@ import { GetServerSideProps } from "next";
 import { TimelineLayout } from "@/components/ui/timeline-layout";
 import Image from "next/image";
 import { Clock } from "lucide-react";
+import clsx from "clsx";
 
 type FixturesPageProps = {
   fixtures: Fixture[];
@@ -11,12 +12,15 @@ type FixturesPageProps = {
 
 function FixtureTeam({ team }: { team: Fixture["teams"][0] }) {
   return (
-    <div className="flex justify-center items-center mb-2">
+    <div
+      className={clsx(
+        "flex justify-center items-center mb-2 h-16 w-16",
+        team.name === "TBD" && "rounded-full bg-gray-200"
+      )}
+    >
       {team.name !== "TBD" ? (
         team.logo && (
-          <div className="h-12 w-12 inline-block">
-            <Image src={team.logo} alt={team.name} width={48} height={48} />
-          </div>
+          <Image src={team.logo} alt={team.name} width={64} height={64} />
         )
       ) : (
         <span className="text-lg font-semibold">TBD</span>

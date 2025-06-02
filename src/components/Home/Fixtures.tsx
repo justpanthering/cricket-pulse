@@ -48,7 +48,8 @@ export function Fixtures({ fixtures }: FixturesProps) {
                   <div
                     className={clsx(
                       "h-24 w-24 flex justify-center items-center",
-                      fixture.teams[1].name === "TBD" && "bg-gray-200"
+                      fixture.teams[1].name === "TBD" &&
+                        "bg-gray-200 rounded-full"
                     )}
                   >
                     {fixture.teams[1].name === "TBD" ? (
