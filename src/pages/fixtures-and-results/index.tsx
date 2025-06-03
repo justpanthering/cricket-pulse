@@ -51,13 +51,13 @@ export default function FixturesAndResultsPage({
         <Tabs.List className="flex justify-center mb-6 gap-4">
           <Tabs.Trigger
             value="fixtures"
-            className="px-4 py-2 rounded data-[state=active]:bg-primary data-[state=active]:text-white"
+            className="px-4 py-2 rounded data-[state=active]:border-white data-[state=active]:border-2 data-[state=active]:bg-primary data-[state=active]:text-white"
           >
             Fixtures
           </Tabs.Trigger>
           <Tabs.Trigger
             value="results"
-            className="px-4 py-2 rounded data-[state=active]:bg-primary data-[state=active]:text-white"
+            className="px-4 py-2 rounded data-[state=active]:border-white data-[state=active]:border-2 data-[state=active]:bg-primary data-[state=active]:text-white"
           >
             Results
           </Tabs.Trigger>
