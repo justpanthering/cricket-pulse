@@ -121,14 +121,14 @@ export default function PointsTablePage() {
             {points.map((row) => (
               <tr key={row.team.name} className="text-center border-t">
                 <td className="px-2 py-2">{row.pos}</td>
-                <td className="px-2 py-2 flex items-center gap-2 justify-center">
+                <td className="px-2 py-2 flex flex-col md:flex-row items-center gap-2 justify-center">
                   {row.team.logo && (
                     <Image
                       src={row.team.logo}
                       alt={row.team.name}
                       width={56}
                       height={56}
-                      className="w-14 h-14"
+                      className="md:w-14 md:h-14"
                     />
                   )}
                   <span>{row.team.name}</span>
