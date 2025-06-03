@@ -7,7 +7,7 @@ import { NavLinks } from "./NavLinks";
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <nav className="flex justify-center px-4 py-4 bg-[#f8f9fa] border-b border-[#eaeaea]">
+    <nav className="flex justify-center px-4 py-4 bg-[#f8f9fa] border-b border-[#eaeaea] text-gray-800 shadow-md">
       <div className="container flex justify-between items-center">
         {/* Logo */}
         <div>
