@@ -94,9 +94,7 @@ export function Results({ results }: { results: Result[] }) {
               <Card className="h-full min-h-[420px] flex flex-col">
                 <CardContent className="flex flex-col items-center justify-center px-6 h-full">
                   <span className="text-xs ml-4 underline text-blue-500 hover:text-blue-800">
-                    <Link href="/fixtures-and-results?show=results">
-                      Show All...
-                    </Link>
+                    <Link href="/results">Show All...</Link>
                   </span>
                 </CardContent>
               </Card>
