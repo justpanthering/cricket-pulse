@@ -3,7 +3,7 @@ import { Calendar, Map } from "lucide-react";
 import Image from "next/image";
 
 function TeamLogo({ src, alt }: { src: string; alt: string }) {
-  return <Image width={256} height={256} src={src} alt={alt} />;
+  return <Image width={128} height={128} src={src} alt={alt} />;
 }
 
 export function Hero({ latestFixture }: { latestFixture: Fixture | null }) {
@@ -13,17 +13,18 @@ export function Hero({ latestFixture }: { latestFixture: Fixture | null }) {
         {latestFixture ? (
           <>
             <h1 className="text-5xl font-bold mb-4">Upcoming Match</h1>
+            <div className="flex items-center justify-center mb-4 gap-4">
+              <TeamLogo
+                src={latestFixture.teams[0].logo as string}
+                alt={latestFixture.teams[0].name}
+              />
+              <span className="text-2xl font-extrabold">VS</span>
+              <TeamLogo
+                src={latestFixture.teams[1].logo as string}
+                alt={latestFixture.teams[1].name}
+              />
+            </div>
             <div>
-              <div className="flex items-center justify-center mb-4 gap-4">
-                <TeamLogo
-                  src={latestFixture.teams[0].logo as string}
-                  alt={latestFixture.teams[0].name}
-                />
-                <TeamLogo
-                  src={latestFixture.teams[1].logo as string}
-                  alt={latestFixture.teams[1].name}
-                />
-              </div>
               <div className="text-3xl font-semibold mb-2">
                 {latestFixture.teams[0].name} vs {latestFixture.teams[1].name}
               </div>
