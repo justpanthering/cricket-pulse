@@ -26,7 +26,7 @@ export function NavLinks() {
     <>
       <NavLink href="/">Home</NavLink>
       <NavLink href="/fixtures-and-results">Fixtures and Results</NavLink>
-      <NavLink href="/points-table">About</NavLink>
+      <NavLink href="/points-table">Points Table</NavLink>
     </>
   );
 }
