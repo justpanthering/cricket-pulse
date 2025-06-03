@@ -30,7 +30,7 @@ export default async function handler(
       page,
       limit,
       totalPages: Math.ceil(results.length / limit),
-    });
+    } as ResultsResponse);
   } catch (error: unknown) {
     console.error("Error fetching results data:", error);
     res.status(500).json({ error: "Failed to fetch results data" });

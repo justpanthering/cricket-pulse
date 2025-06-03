@@ -1,20 +1,20 @@
-import { Fixture } from "@/types/match";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import * as Tabs from "@radix-ui/react-tabs";
 import { FixturesTimeline } from "@/components/Fixtures-and-Results/Fixtures";
 import { ResultsTimeline } from "@/components/Fixtures-and-Results/Results";
 import { ResultsResponse } from "../api/results";
+import { FixturesResponse } from "../api/fixtures";
 
 type FixturesPageProps = {
-  fixtures: Fixture[];
-  resultResponse: ResultsResponse | null;
+  fixturesResponse: FixturesResponse | null;
+  resultsResponse: ResultsResponse | null;
   error?: string;
 };
 
 export default function FixturesAndResultsPage({
-  fixtures,
-  resultResponse,
+  fixturesResponse,
+  resultsResponse,
   error,
 }: FixturesPageProps) {
   const router = useRouter();
@@ -63,10 +63,10 @@ export default function FixturesAndResultsPage({
           </Tabs.Trigger>
         </Tabs.List>
         <Tabs.Content value="fixtures">
-          <FixturesTimeline fixtures={fixtures} />
+          <FixturesTimeline apiResponse={fixturesResponse} />
         </Tabs.Content>
         <Tabs.Content value="results">
-          <ResultsTimeline apiResponse={resultResponse} />
+          <ResultsTimeline apiResponse={resultsResponse} />
         </Tabs.Content>
       </Tabs.Root>
     </div>
@@ -77,12 +77,11 @@ export const getServerSideProps: GetServerSideProps<
   FixturesPageProps
 > = async () => {
   try {
-    let fixtures: Fixture[] = [];
     const [fixturesRes, resultsRes] = await Promise.all([
       fetch(
         `${
           process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-        }/api/fixtures`
+        }/api/fixtures?page=1&limit=5`
       ),
       fetch(
         `${
@@ -90,21 +89,20 @@ export const getServerSideProps: GetServerSideProps<
         }/api/results`
       ),
     ]);
-    const fixturesJson = await fixturesRes.json();
+    const fixturesJson: FixturesResponse = await fixturesRes.json();
     const resultsJson = await resultsRes.json();
-    fixtures = fixturesJson.data || [];
     return {
       props: {
-        fixtures,
-        resultResponse: resultsJson,
+        fixturesResponse: fixturesJson,
+        resultsResponse: resultsJson,
       },
     };
   } catch (error) {
     console.error("Error fetching data:", error);
     return {
       props: {
-        fixtures: [],
-        resultResponse: null,
+        fixturesResponse: null,
+        resultsResponse: null,
         error: "Failed to load data",
       },
     };
