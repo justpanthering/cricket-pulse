@@ -1,13 +1,11 @@
 import { Fixture } from "@/types/match";
-import { GetServerSideProps } from "next";
 import { TimelineLayout } from "@/components/ui/timeline-layout";
 import Image from "next/image";
 import { Clock } from "lucide-react";
 import clsx from "clsx";
 
-type FixturesPageProps = {
+type FixturesProps = {
   fixtures: Fixture[];
-  error?: string;
 };
 
 function FixtureTeam({ team }: { team: Fixture["teams"][0] }) {
@@ -29,17 +27,9 @@ function FixtureTeam({ team }: { team: Fixture["teams"][0] }) {
   );
 }
 
-export default function FixturesPage({ fixtures, error }: FixturesPageProps) {
-  if (error)
-    return (
-      <div className="text-center text-red-500 mt-10">
-        Something went wrong! Please try again later.
-      </div>
-    );
-
+export function FixturesTimeline({ fixtures }: FixturesProps) {
   return (
-    <div className="min-h-screen container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-center mb-8">Upcoming Fixtures</h1>
+    <>
       {fixtures.length === 0 ? (
         <p className="text-center text-gray-500">No fixtures found.</p>
       ) : (
@@ -70,30 +60,6 @@ export default function FixturesPage({ fixtures, error }: FixturesPageProps) {
           size="md"
         />
       )}
-    </div>
+    </>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  try {
-    const res = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-      }/api/fixtures`
-    );
-    const json = await res.json();
-    return {
-      props: {
-        fixtures: json.data || [],
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching fixtures:", error);
-    return {
-      props: {
-        fixtures: [],
-        error: "Failed to load fixtures",
-      },
-    };
-  }
-};

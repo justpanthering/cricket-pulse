@@ -15,11 +15,11 @@ export function Fixtures({ fixtures }: FixturesProps) {
   }
 
   return (
-    <section className="py-8">
+    <section className="py-8 container mx-auto">
       <div className="flex justify-center items-center mb-10">
         <h2 className="text-2xl font-bold text-center">Fixtures</h2>
-        <span className="text-xs ml-4 underline text-blue-600">
-          <Link href="/fixtures">(Show All)</Link>
+        <span className="text-xs ml-4 underline text-blue-600 hover:text-blue-800">
+          <Link href="/fixtures-and-results?show=fixtures">(Show All)</Link>
         </span>
       </div>
       <div className="flex flex-col md:flex-row justify-center gap-4 max-w-6xl mx-auto">

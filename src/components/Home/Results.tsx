@@ -21,7 +21,7 @@ export function Results({ results }: { results: Result[] }) {
       <div className="flex justify-center items-center mb-10">
         <h2 className="text-2xl font-bold text-center">Results</h2>
         <span className="text-xs ml-4 underline text-blue-500  hover:text-blue-800">
-          <Link href="/results">(Show All)</Link>
+          <Link href="/fixtures-and-results?show=results">(Show All)</Link>
         </span>
       </div>
       <div className="flex flex-col lg:flex-row justify-center gap-4 max-w-6xl mx-auto">
@@ -94,7 +94,9 @@ export function Results({ results }: { results: Result[] }) {
               <Card className="h-full min-h-[420px] flex flex-col">
                 <CardContent className="flex flex-col items-center justify-center px-6 h-full">
                   <span className="text-xs ml-4 underline text-blue-500 hover:text-blue-800">
-                    <Link href="/results">Show All...</Link>
+                    <Link href="/fixtures-and-results?show=results">
+                      Show All...
+                    </Link>
                   </span>
                 </CardContent>
               </Card>

@@ -1,5 +1,14 @@
+import { Result } from "@/types/match";
 import { getResultsData } from "@/utils/api/web-scraping";
 import type { NextApiRequest, NextApiResponse } from "next";
+
+export type ResultsResponse = {
+  data: Result[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
 
 export default async function handler(
   req: NextApiRequest,
