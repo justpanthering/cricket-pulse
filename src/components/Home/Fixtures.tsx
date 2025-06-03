@@ -22,7 +22,7 @@ export function Fixtures({ fixtures }: FixturesProps) {
           <Link href="/fixtures-and-results?show=fixtures">(Show All)</Link>
         </span>
       </div>
-      <div className="flex flex-col md:flex-row justify-center gap-4 max-w-6xl mx-auto">
+      <div className="flex flex-col md:flex-row justify-center gap-4  mx-2 md:mx-auto max-w-6xl">
         {fixtures.map((fixture) => (
           <Card
             key={fixture.schedule.date + fixture.schedule.time}

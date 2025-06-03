@@ -23,7 +23,7 @@ export function PointsTable({ points }: { points: Point[] }) {
           <Link href="/points-table">(Show All)</Link>
         </span>
       </div>
-      <div className="flex flex-col lg:flex-row justify-center gap-4 max-w-6xl mx-auto">
+      <div className="flex flex-col lg:flex-row justify-center gap-4 mx-14 md:mx-auto max-w-6xl">
         <Carousel>
           <CarouselContent>
             {points.map((row, idx) => (
