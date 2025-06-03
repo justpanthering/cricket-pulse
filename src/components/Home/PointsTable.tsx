@@ -29,7 +29,7 @@ export function PointsTable({ points }: { points: Point[] }) {
             {points.map((row, idx) => (
               <CarouselItem key={row.team.name + idx} className="md:basis-1/3">
                 <Card className="h-full min-h-[320px] flex flex-col">
-                  <CardContent className="flex flex-col items-center justify-between px-6 h-full">
+                  <CardContent className="flex flex-col items-center justify-between px-0.5 h-full">
                     <div className="flex items-center mb-2">
                       {row.team.logo && (
                         <div className="h-20 w-20">
@@ -87,7 +87,7 @@ export function PointsTable({ points }: { points: Point[] }) {
             ))}
             <CarouselItem className="md:basis-1/3">
               <Card className="h-full min-h-[320px] flex flex-col">
-                <CardContent className="flex flex-col items-center justify-center px-6 h-full">
+                <CardContent className="flex flex-col items-center justify-center px-0.5 h-full">
                   <span className="text-xs ml-4 underline text-blue-500 hover:text-blue-800">
                     <Link href="/points-table">Show All...</Link>
                   </span>

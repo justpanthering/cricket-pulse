@@ -33,7 +33,7 @@ export function Results({ results }: { results: Result[] }) {
                 className="md:basis-1/3"
               >
                 <Card className="h-full min-h-[420px] flex flex-col">
-                  <CardContent className="flex flex-col items-center justify-between px-6 h-full">
+                  <CardContent className="flex flex-col items-center justify-between px-0.5 h-full">
                     <div className="text-center mb-2 flex flex-col justify-center md:flex-row items-center">
                       <div>
                         {result.teams[0].logo && (
@@ -74,15 +74,15 @@ export function Results({ results }: { results: Result[] }) {
                         {result.matchOrder}
                       </h2>
                     </div>
-                    <div className="flex items-center text-sm text-green-700 mb-1">
+                    <div className="flex items-center text-sm text-green-700 mb-1 max-w-3xs">
                       <Trophy className="mr-2" size={20} />
                       <span>{result.comments}</span>
                     </div>
-                    <div className="flex text-sm text-gray-600 mb-1">
+                    <div className="flex text-sm text-gray-600 mb-1 max-w-3xs">
                       <Calendar className="mr-2" size={20} />
                       <span>{result.dateTime}</span>
                     </div>
-                    <div className="flex text-sm text-gray-600">
+                    <div className="flex text-sm text-gray-600 max-w-3xs">
                       <Map className="mr-2" size={24} />
                       <span>{result.venue}</span>
                     </div>
@@ -92,9 +92,11 @@ export function Results({ results }: { results: Result[] }) {
             ))}
             <CarouselItem className="md:basis-1/3">
               <Card className="h-full min-h-[420px] flex flex-col">
-                <CardContent className="flex flex-col items-center justify-center px-6 h-full">
+                <CardContent className="flex flex-col items-center justify-center px-0.5 h-full">
                   <span className="text-xs ml-4 underline text-blue-500 hover:text-blue-800">
-                    <Link href="/results">Show All...</Link>
+                    <Link href="/fixtures-and-results?show=results">
+                      Show All...
+                    </Link>
                   </span>
                 </CardContent>
               </Card>
