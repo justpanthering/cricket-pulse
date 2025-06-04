@@ -4,8 +4,8 @@ import Image from "next/image";
 import { Clock, RefreshCcw } from "lucide-react";
 import clsx from "clsx";
 import { FixturesResponse } from "@/pages/api/fixtures";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchFixtures } from "@/lib/api";
+import { useQueryClient } from "@tanstack/react-query";
+import { useFixturesInfiniteQuery } from "@/lib/queries";
 
 type FixturesProps = { apiResponse: FixturesResponse | null };
 
@@ -38,24 +38,7 @@ export function FixturesTimeline({ apiResponse }: FixturesProps) {
     isLoading,
     isError,
     isFetching,
-  } = useInfiniteQuery<FixturesResponse>({
-    queryKey: ["fixtures"],
-    queryFn: ({ pageParam = 1 }) => fetchFixtures(Number(pageParam), 5),
-    getNextPageParam: (lastFetchedPage, allFetchedPages) => {
-      if (
-        lastFetchedPage &&
-        allFetchedPages.length < (lastFetchedPage.totalPages || 1)
-      ) {
-        return allFetchedPages.length + 1;
-      }
-      return undefined;
-    },
-    initialPageParam: 1,
-    initialData: apiResponse
-      ? { pages: [apiResponse], pageParams: [1] }
-      : undefined,
-    refetchOnMount: false,
-  });
+  } = useFixturesInfiniteQuery(apiResponse ?? undefined);
 
   const handleRefresh = () => {
     queryClient.invalidateQueries({ queryKey: ["fixtures"] });

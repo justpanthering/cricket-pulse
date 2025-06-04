@@ -1,6 +1,5 @@
 import { GetServerSideProps } from "next";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import {
   Pagination,
   PaginationContent,
@@ -13,6 +12,7 @@ import {
 import Image from "next/image";
 import { fetchPointsTable } from "@/lib/api";
 import { PointsTableResponse } from "../api/points-table";
+import { usePointsTableQuery } from "@/lib/queries";
 
 const LIMIT_OPTIONS = [3, 5, 10];
 
@@ -26,14 +26,11 @@ export default function PointsTablePage({
   const [page, setPage] = useState(initialApiResponse.page || 1);
   const [limit, setLimit] = useState(initialApiResponse.limit || 10);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["points-table", page, limit],
-    queryFn: () => fetchPointsTable(page, limit),
-    initialData:
-      page === initialApiResponse.page && limit === initialApiResponse.limit
-        ? initialApiResponse
-        : undefined,
-  });
+  const { data, isLoading } = usePointsTableQuery(
+    page,
+    limit,
+    initialApiResponse
+  );
 
   const points = data?.data ?? [];
   const totalPages = data?.totalPages ?? 1;

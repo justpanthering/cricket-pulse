@@ -1,11 +1,11 @@
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchResults } from "@/lib/api";
+import { useQueryClient } from "@tanstack/react-query";
 import { ResultsResponse } from "@/pages/api/results";
 import { Result } from "@/types/match";
 import { TimelineLayout } from "@/components/ui/timeline-layout";
 import Image from "next/image";
 import clsx from "clsx";
 import { RefreshCcw, Trophy } from "lucide-react";
+import { useResultsInfiniteQuery } from "@/lib/queries";
 
 type ResultsProps = {
   apiResponse: ResultsResponse | null;
@@ -40,24 +40,7 @@ export function ResultsTimeline({ apiResponse }: ResultsProps) {
     isLoading,
     isError,
     isFetching,
-  } = useInfiniteQuery<ResultsResponse>({
-    queryKey: ["results"],
-    queryFn: ({ pageParam = 1 }) => fetchResults(Number(pageParam), 5),
-    getNextPageParam: (lastFetchedPage, allFetchedPages) => {
-      if (
-        lastFetchedPage &&
-        allFetchedPages.length < (lastFetchedPage.totalPages || 1)
-      ) {
-        return allFetchedPages.length + 1;
-      }
-      return undefined;
-    },
-    initialPageParam: 1,
-    initialData: apiResponse
-      ? { pages: [apiResponse], pageParams: [1] }
-      : undefined,
-    refetchOnMount: false,
-  });
+  } = useResultsInfiniteQuery(apiResponse ?? undefined);
 
   const handleRefresh = () => {
     queryClient.invalidateQueries({ queryKey: ["results"] });
