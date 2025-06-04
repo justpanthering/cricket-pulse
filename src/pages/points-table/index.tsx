@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { Point } from "@/types/match";
+import { GetServerSideProps } from "next";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Pagination,
   PaginationContent,
@@ -11,40 +12,31 @@ import {
 } from "@/components/ui/pagination";
 import Image from "next/image";
 import { fetchPointsTable } from "@/lib/api";
+import { PointsTableResponse } from "../api/points-table";
 
 const LIMIT_OPTIONS = [3, 5, 10];
 
-export default function PointsTablePage() {
-  const [points, setPoints] = useState<Point[] | null>();
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [limit, setLimit] = useState(10);
+type PointsTablePageProps = {
+  initialApiResponse: PointsTableResponse;
+};
 
-  const fetchPoints = async (pageNum: number, limitNum: number) => {
-    setLoading(true);
-    const data = await fetchPointsTable(pageNum, limitNum);
-    setPoints(data.data);
-    setTotalPages(data.totalPages);
-    setLoading(false);
-  };
+export default function PointsTablePage({
+  initialApiResponse,
+}: PointsTablePageProps) {
+  const [page, setPage] = useState(initialApiResponse.page || 1);
+  const [limit, setLimit] = useState(initialApiResponse.limit || 10);
 
-  useEffect(() => {
-    if (!points) {
-      fetchPoints(page, limit);
-    }
-  }, [page, limit, points]);
+  const { data, isLoading } = useQuery({
+    queryKey: ["points-table", page, limit],
+    queryFn: () => fetchPointsTable(page, limit),
+    initialData:
+      page === initialApiResponse.page && limit === initialApiResponse.limit
+        ? initialApiResponse
+        : undefined,
+  });
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-    fetchPoints(newPage, limit);
-  };
-
-  const handleLimitChange = (newLimit: number) => {
-    setLimit(newLimit);
-    setPage(1);
-    fetchPoints(1, newLimit);
-  };
+  const points = data?.data ?? [];
+  const totalPages = data?.totalPages ?? 1;
 
   // Helper to generate page numbers (with ellipsis if needed)
   const getPageNumbers = () => {
@@ -70,6 +62,12 @@ export default function PointsTablePage() {
     return pages;
   };
 
+  const handlePageChange = (newPage: number) => setPage(newPage);
+  const handleLimitChange = (newLimit: number) => {
+    setLimit(newLimit);
+    setPage(1);
+  };
+
   return (
     <div className="container min-h-screen mx-auto py-8">
       <h1 className="text-2xl font-bold mb-6 text-center">Points Table</h1>
@@ -90,7 +88,7 @@ export default function PointsTablePage() {
           ))}
         </select>
       </div>
-      {loading || !points ? (
+      {isLoading ? (
         <div className="text-center">Loading...</div>
       ) : (
         <table className="min-w-full border border-gray-200 rounded">
@@ -190,3 +188,15 @@ export default function PointsTablePage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const page = 1;
+  const limit = 10;
+  const data = await fetchPointsTable(page, limit);
+
+  return {
+    props: {
+      initialApiResponse: data,
+    },
+  };
+};
