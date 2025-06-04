@@ -5,6 +5,7 @@ import { FixturesTimeline } from "@/components/Fixtures-and-Results/Fixtures";
 import { ResultsTimeline } from "@/components/Fixtures-and-Results/Results";
 import { ResultsResponse } from "../api/results";
 import { FixturesResponse } from "../api/fixtures";
+import { fetchFixtures, fetchResults } from "@/lib/api";
 
 type FixturesPageProps = {
   fixturesResponse: FixturesResponse | null;
@@ -77,20 +78,10 @@ export const getServerSideProps: GetServerSideProps<
   FixturesPageProps
 > = async () => {
   try {
-    const [fixturesRes, resultsRes] = await Promise.all([
-      fetch(
-        `${
-          process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-        }/api/fixtures?page=1&limit=5`
-      ),
-      fetch(
-        `${
-          process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-        }/api/results`
-      ),
+    const [fixturesJson, resultsJson] = await Promise.all([
+      fetchFixtures(1, 5),
+      fetchResults(),
     ]);
-    const fixturesJson: FixturesResponse = await fixturesRes.json();
-    const resultsJson = await resultsRes.json();
     return {
       props: {
         fixturesResponse: fixturesJson,

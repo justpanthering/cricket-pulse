@@ -10,14 +10,7 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/pagination";
 import Image from "next/image";
-
-type PointsTableResponse = {
-  data: Point[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-};
+import { fetchPointsTable } from "@/lib/api";
 
 const LIMIT_OPTIONS = [3, 5, 10];
 
@@ -30,10 +23,7 @@ export default function PointsTablePage() {
 
   const fetchPoints = async (pageNum: number, limitNum: number) => {
     setLoading(true);
-    const res = await fetch(
-      `/api/points-table?page=${pageNum}&limit=${limitNum}`
-    );
-    const data: PointsTableResponse = await res.json();
+    const data = await fetchPointsTable(pageNum, limitNum);
     setPoints(data.data);
     setTotalPages(data.totalPages);
     setLoading(false);

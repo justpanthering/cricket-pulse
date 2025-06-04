@@ -4,6 +4,7 @@ import { Results } from "@/components/Home/Results";
 import { PointsTable } from "@/components/Home/PointsTable";
 import { Fixture, Result, Point } from "@/types/match";
 import { GetServerSideProps } from "next";
+import { fetchFixtures, fetchResults, fetchPointsTable } from "@/lib/api";
 
 type HomeProps = {
   latestFixture: Fixture | null;
@@ -30,43 +31,19 @@ export default function Home({
 
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
-    // Fetch fixtures
-    const fixturesRes = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-      }/api/fixtures`
-    );
-    const { data: fixturesData } = (await fixturesRes.json()) as {
-      data: Fixture[];
-    };
-    const latestFixture = fixturesData.length > 0 ? fixturesData[0] : null;
+    const fixturesJson = await fetchFixtures();
+    const latestFixture =
+      fixturesJson.data.length > 0 ? fixturesJson.data[0] : null;
 
-    // Fetch results
-    const resultsRes = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-      }/api/results`
-    );
-    const { data: resultsData } = (await resultsRes.json()) as {
-      data: Result[];
-    };
-
-    // Fetch points table
-    const pointsRes = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-      }/api/points-table`
-    );
-    const { data: pointsData } = (await pointsRes.json()) as {
-      data: Point[];
-    };
+    const resultsJson = await fetchResults();
+    const pointsJson = await fetchPointsTable();
 
     return {
       props: {
         latestFixture,
-        fixtures: fixturesData,
-        results: resultsData,
-        points: pointsData,
+        fixtures: fixturesJson.data,
+        results: resultsJson.data,
+        points: pointsJson.data,
       },
     };
   } catch (error: unknown) {

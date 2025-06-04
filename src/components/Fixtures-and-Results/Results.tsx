@@ -5,6 +5,7 @@ import Image from "next/image";
 import clsx from "clsx";
 import { Trophy } from "lucide-react";
 import { ResultsResponse } from "@/pages/api/results";
+import { fetchResults } from "@/lib/api";
 
 type ResultsProps = {
   apiResponse: ResultsResponse | null;
@@ -37,8 +38,7 @@ export function ResultsTimeline({ apiResponse }: ResultsProps) {
   const loadMore = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/results?page=${page + 1}&limit=5`);
-      const data = await res.json();
+      const data = await fetchResults(page + 1, 5);
       setResults((prev) => [...prev, ...data.data]);
       setPage(page + 1);
     } catch (e) {
