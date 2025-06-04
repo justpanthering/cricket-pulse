@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { fetchResults } from "@/lib/api";
+import { ResultsResponse } from "@/pages/api/results";
 import { Result } from "@/types/match";
 import { TimelineLayout } from "@/components/ui/timeline-layout";
 import Image from "next/image";
 import clsx from "clsx";
 import { Trophy } from "lucide-react";
-import { ResultsResponse } from "@/pages/api/results";
-import { fetchResults } from "@/lib/api";
 
 type ResultsProps = {
   apiResponse: ResultsResponse | null;
@@ -31,26 +31,43 @@ function FixtureTeam({ team }: { team: Result["teams"][0] }) {
 }
 
 export function ResultsTimeline({ apiResponse }: ResultsProps) {
-  const [results, setResults] = useState<Result[]>(apiResponse?.data || []);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery<ResultsResponse>({
+    queryKey: ["results"],
+    queryFn: ({ pageParam = 1 }) => fetchResults(Number(pageParam), 5),
+    getNextPageParam: (lastFetchedPage, allFetchedPages) => {
+      if (
+        lastFetchedPage &&
+        allFetchedPages.length < (lastFetchedPage.totalPages || 1)
+      ) {
+        return allFetchedPages.length + 1;
+      }
+      return undefined;
+    },
+    initialPageParam: 1,
+    initialData: apiResponse
+      ? { pages: [apiResponse], pageParams: [1] }
+      : undefined,
+    refetchOnMount: false,
+  });
 
-  const loadMore = async () => {
-    setLoading(true);
-    try {
-      const data = await fetchResults(page + 1, 5);
-      setResults((prev) => [...prev, ...data.data]);
-      setPage(page + 1);
-    } catch (e) {
-      console.error("Failed to load more results:", e);
-    }
-    setLoading(false);
-  };
+  if (isLoading)
+    return <p className="text-center text-gray-500">Loading results...</p>;
+  if (isError)
+    return <p className="text-center text-red-500">Failed to load results.</p>;
+
+  const results = data?.pages.flatMap((page) => page.data) ?? [];
 
   return (
     <>
       {results.length === 0 ? (
-        <p className="text-center text-gray-500">No fixtures found.</p>
+        <p className="text-center text-gray-500">No results found.</p>
       ) : (
         <TimelineLayout
           items={[...results].reverse().map((result, id) => ({
@@ -81,14 +98,14 @@ export function ResultsTimeline({ apiResponse }: ResultsProps) {
           size="md"
         />
       )}
-      {apiResponse && page < apiResponse.totalPages && (
+      {hasNextPage && (
         <div className="flex justify-center mt-4">
           <button
-            onClick={loadMore}
-            disabled={loading}
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? "Loading..." : "Load More"}
+            {isFetchingNextPage ? "Loading..." : "Load More"}
           </button>
         </div>
       )}
