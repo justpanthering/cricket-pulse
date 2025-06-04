@@ -1,10 +1,10 @@
 import { Fixture } from "@/types/match";
 import { TimelineLayout } from "@/components/ui/timeline-layout";
 import Image from "next/image";
-import { Clock } from "lucide-react";
+import { Clock, RefreshCcw } from "lucide-react";
 import clsx from "clsx";
 import { FixturesResponse } from "@/pages/api/fixtures";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchFixtures } from "@/lib/api";
 
 type FixturesProps = { apiResponse: FixturesResponse | null };
@@ -29,6 +29,7 @@ function FixtureTeam({ team }: { team: Fixture["teams"][0] }) {
 }
 
 export function FixturesTimeline({ apiResponse }: FixturesProps) {
+  const queryClient = useQueryClient();
   const {
     data,
     fetchNextPage,
@@ -36,6 +37,7 @@ export function FixturesTimeline({ apiResponse }: FixturesProps) {
     isFetchingNextPage,
     isLoading,
     isError,
+    isFetching,
   } = useInfiniteQuery<FixturesResponse>({
     queryKey: ["fixtures"],
     queryFn: ({ pageParam = 1 }) => fetchFixtures(Number(pageParam), 5),
@@ -55,17 +57,31 @@ export function FixturesTimeline({ apiResponse }: FixturesProps) {
     refetchOnMount: false,
   });
 
+  const handleRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ["fixtures"] });
+  };
+
   if (isLoading)
     return <p className="text-center text-gray-500">Loading fixtures...</p>;
   if (isError)
     return <p className="text-center text-red-500">Failed to load fixtures.</p>;
 
-  console.log("Fixtures data:", data);
-
   const fixtures = data?.pages.flatMap((page) => page.data) ?? [];
 
   return (
     <>
+      <div className="flex justify-end mb-2">
+        <button
+          onClick={handleRefresh}
+          className="flex items-center px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm"
+          disabled={isFetching}
+        >
+          <RefreshCcw size={14} className={isFetching ? "animate-spin" : ""} />
+          <span className="ml-1.5">
+            {isFetching ? "Refreshing..." : "Refresh"}
+          </span>
+        </button>
+      </div>
       {fixtures.length === 0 ? (
         <p className="text-center text-gray-500">No fixtures found.</p>
       ) : (

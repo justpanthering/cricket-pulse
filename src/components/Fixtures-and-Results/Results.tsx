@@ -1,11 +1,11 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchResults } from "@/lib/api";
 import { ResultsResponse } from "@/pages/api/results";
 import { Result } from "@/types/match";
 import { TimelineLayout } from "@/components/ui/timeline-layout";
 import Image from "next/image";
 import clsx from "clsx";
-import { Trophy } from "lucide-react";
+import { RefreshCcw, Trophy } from "lucide-react";
 
 type ResultsProps = {
   apiResponse: ResultsResponse | null;
@@ -31,6 +31,7 @@ function FixtureTeam({ team }: { team: Result["teams"][0] }) {
 }
 
 export function ResultsTimeline({ apiResponse }: ResultsProps) {
+  const queryClient = useQueryClient();
   const {
     data,
     fetchNextPage,
@@ -38,6 +39,7 @@ export function ResultsTimeline({ apiResponse }: ResultsProps) {
     isFetchingNextPage,
     isLoading,
     isError,
+    isFetching,
   } = useInfiniteQuery<ResultsResponse>({
     queryKey: ["results"],
     queryFn: ({ pageParam = 1 }) => fetchResults(Number(pageParam), 5),
@@ -57,6 +59,10 @@ export function ResultsTimeline({ apiResponse }: ResultsProps) {
     refetchOnMount: false,
   });
 
+  const handleRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ["results"] });
+  };
+
   if (isLoading)
     return <p className="text-center text-gray-500">Loading results...</p>;
   if (isError)
@@ -66,6 +72,18 @@ export function ResultsTimeline({ apiResponse }: ResultsProps) {
 
   return (
     <>
+      <div className="flex justify-end mb-2">
+        <button
+          onClick={handleRefresh}
+          className="flex items-center px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm"
+          disabled={isFetching}
+        >
+          <RefreshCcw size={14} className={isFetching ? "animate-spin" : ""} />
+          <span className="ml-1.5">
+            {isFetching ? "Refreshing..." : "Refresh"}
+          </span>
+        </button>
+      </div>
       {results.length === 0 ? (
         <p className="text-center text-gray-500">No results found.</p>
       ) : (
