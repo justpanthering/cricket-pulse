@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { FixturesResponse } from "@/pages/api/fixtures";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFixturesInfiniteQuery } from "@/lib/queries";
+import Head from "next/head";
 
 type FixturesProps = { apiResponse: FixturesResponse | null };
 
@@ -53,6 +54,9 @@ export function FixturesTimeline({ apiResponse }: FixturesProps) {
 
   return (
     <>
+      <Head>
+        <title>Fixtures | Cricket Pulse IPL T20</title>
+      </Head>
       <div className="flex justify-end mb-2">
         <button
           onClick={handleRefresh}

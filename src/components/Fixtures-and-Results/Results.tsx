@@ -6,6 +6,7 @@ import Image from "next/image";
 import clsx from "clsx";
 import { RefreshCcw, Trophy } from "lucide-react";
 import { useResultsInfiniteQuery } from "@/lib/queries";
+import Head from "next/head";
 
 type ResultsProps = {
   apiResponse: ResultsResponse | null;
@@ -55,6 +56,9 @@ export function ResultsTimeline({ apiResponse }: ResultsProps) {
 
   return (
     <>
+      <Head>
+        <title>Results | Cricket Pulse IPL T20</title>
+      </Head>
       <div className="flex justify-end mb-2">
         <button
           onClick={handleRefresh}

@@ -5,6 +5,7 @@ import { PointsTable } from "@/components/Home/PointsTable";
 import { Fixture, Result, Point } from "@/types/match";
 import { GetServerSideProps } from "next";
 import { fetchFixtures, fetchResults, fetchPointsTable } from "@/lib/api";
+import Head from "next/head";
 
 type HomeProps = {
   latestFixture: Fixture | null;
@@ -20,12 +21,17 @@ export default function Home({
   points,
 }: HomeProps) {
   return (
-    <div className="min-h-screen">
-      <Hero latestFixture={latestFixture} />
-      <Fixtures fixtures={fixtures} />
-      <Results results={results} />
-      <PointsTable points={points} />
-    </div>
+    <>
+      <Head>
+        <title>Home | Cricket Pulse IPL T20</title>
+      </Head>
+      <div className="min-h-screen">
+        <Hero latestFixture={latestFixture} />
+        <Fixtures fixtures={fixtures} />
+        <Results results={results} />
+        <PointsTable points={points} />
+      </div>
+    </>
   );
 }
 
