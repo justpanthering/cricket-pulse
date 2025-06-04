@@ -26,7 +26,7 @@ export default function PointsTablePage({
   const [page, setPage] = useState(initialApiResponse.page || 1);
   const [limit, setLimit] = useState(initialApiResponse.limit || 10);
 
-  const { data, isLoading } = usePointsTableQuery(
+  const { data, isLoading, isFetching } = usePointsTableQuery(
     page,
     limit,
     initialApiResponse
@@ -85,7 +85,7 @@ export default function PointsTablePage({
           ))}
         </select>
       </div>
-      {isLoading ? (
+      {isLoading || isFetching ? (
         <div className="text-center">Loading...</div>
       ) : (
         <table className="min-w-full border border-gray-200 rounded">
