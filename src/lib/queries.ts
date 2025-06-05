@@ -14,6 +14,7 @@ export function usePointsTableQuery(
     queryKey: ["points-table", page, limit],
     queryFn: () => fetchPointsTable(page, limit),
     initialData,
+    refetchInterval: 10000,
   });
 }
 
@@ -36,6 +37,7 @@ export function useFixturesInfiniteQuery(initialData?: FixturesResponse) {
       ? { pages: [initialData], pageParams: [1] }
       : undefined,
     refetchOnMount: false,
+    refetchInterval: 10000,
   });
 }
 
@@ -58,5 +60,6 @@ export function useResultsInfiniteQuery(initialData?: ResultsResponse) {
       ? { pages: [initialData], pageParams: [1] }
       : undefined,
     refetchOnMount: false,
+    refetchInterval: 10000,
   });
 }
