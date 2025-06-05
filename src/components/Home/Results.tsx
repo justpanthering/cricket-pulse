@@ -2,7 +2,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import { Trophy, Calendar, Map } from "lucide-react";
-import { Result } from "@/types/match";
 import {
   Carousel,
   CarouselContent,
@@ -10,9 +9,26 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
+import { ResultsResponse } from "@/pages/api/results";
+import { useResultsInfiniteQuery } from "@/lib/queries";
 
-export function Results({ results }: { results: Result[] }) {
-  if (!results || results.length === 0) {
+export function ResultsSection({
+  initialResults,
+}: {
+  initialResults: ResultsResponse | null;
+}) {
+  const { data, isLoading, isError } = useResultsInfiniteQuery(
+    initialResults || undefined
+  );
+
+  const results =
+    data?.pages.flatMap((page) => page.data) ?? initialResults?.data ?? [];
+
+  if (isLoading) {
+    return <div className="text-center py-8">Loading results...</div>;
+  }
+
+  if (isError || results.length === 0) {
     return <div className="text-center py-8">No results available.</div>;
   }
 

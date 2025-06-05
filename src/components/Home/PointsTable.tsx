@@ -1,7 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
-import { Point } from "@/types/match";
 import {
   Carousel,
   CarouselContent,
@@ -9,9 +8,26 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
+import { PointsTableResponse } from "@/pages/api/points-table";
+import { usePointsTableQuery } from "@/lib/queries";
 
-export function PointsTable({ points }: { points: Point[] }) {
-  if (!points || points.length === 0) {
+export function PointsTableSection({
+  initialPoints,
+}: {
+  initialPoints: PointsTableResponse | null;
+}) {
+  // Use react-query for caching and polling
+  const { data, isLoading, isError } = usePointsTableQuery(
+    1,
+    5,
+    initialPoints || undefined
+  );
+
+  if (isLoading) {
+    return <div className="text-center py-8">Loading points table...</div>;
+  }
+
+  if (isError || !data || data.data.length === 0) {
     return <div className="text-center py-8">No points table available.</div>;
   }
 
@@ -26,7 +42,7 @@ export function PointsTable({ points }: { points: Point[] }) {
       <div className="flex flex-col lg:flex-row justify-center gap-4 mx-14 md:mx-auto max-w-6xl">
         <Carousel>
           <CarouselContent>
-            {points.map((row, idx) => (
+            {data.data.map((row, idx) => (
               <CarouselItem key={row.team.name + idx} className="md:basis-1/3">
                 <Card className="h-full min-h-[320px] flex flex-col">
                   <CardContent className="flex flex-col items-center justify-between px-0.5 h-full">

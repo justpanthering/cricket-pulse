@@ -1,24 +1,25 @@
-import { Hero } from "@/components/Home/Hero";
-import { Fixtures } from "@/components/Home/Fixtures";
-import { Results } from "@/components/Home/Results";
-import { PointsTable } from "@/components/Home/PointsTable";
-import { Fixture, Result, Point } from "@/types/match";
+import {
+  HeroFixturesSection,
+  ResultsSection,
+  PointsTableSection,
+} from "@/components/Home";
 import { GetServerSideProps } from "next";
 import { fetchFixtures, fetchResults, fetchPointsTable } from "@/lib/api";
 import Head from "next/head";
+import { FixturesResponse } from "./api/fixtures";
+import { ResultsResponse } from "./api/results";
+import { PointsTableResponse } from "./api/points-table";
 
 type HomeProps = {
-  latestFixture: Fixture | null;
-  fixtures: Fixture[];
-  results: Result[];
-  points: Point[];
+  fixturesResponse: FixturesResponse | null;
+  resultsResponse: ResultsResponse | null;
+  pointsTableResponse: PointsTableResponse | null;
 };
 
 export default function Home({
-  latestFixture,
-  fixtures,
-  results,
-  points,
+  fixturesResponse,
+  resultsResponse,
+  pointsTableResponse,
 }: HomeProps) {
   return (
     <>
@@ -26,40 +27,35 @@ export default function Home({
         <title>Home | Cricket Pulse IPL T20</title>
       </Head>
       <div className="min-h-screen">
-        <Hero latestFixture={latestFixture} />
-        <Fixtures fixtures={fixtures} />
-        <Results results={results} />
-        <PointsTable points={points} />
+        <HeroFixturesSection initialFixtures={fixturesResponse} />
+        <ResultsSection initialResults={resultsResponse} />
+        <PointsTableSection initialPoints={pointsTableResponse} />
       </div>
     </>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   try {
-    const fixturesJson = await fetchFixtures();
-    const latestFixture =
-      fixturesJson.data.length > 0 ? fixturesJson.data[0] : null;
+    const fixturesResponse = await fetchFixtures();
 
-    const resultsJson = await fetchResults();
-    const pointsJson = await fetchPointsTable();
+    const resultsResponse = await fetchResults();
+    const pointsTableResponse = await fetchPointsTable();
 
     return {
       props: {
-        latestFixture,
-        fixtures: fixturesJson.data,
-        results: resultsJson.data,
-        points: pointsJson.data,
+        fixturesResponse,
+        resultsResponse,
+        pointsTableResponse,
       },
     };
   } catch (error: unknown) {
     console.error("Error fetching data:", error);
     return {
       props: {
-        latestFixture: null,
-        fixtures: [],
-        results: [],
-        points: [],
+        fixturesResponse: null,
+        resultsResponse: null,
+        pointsTableResponse: null,
       },
     };
   }
