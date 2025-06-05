@@ -77,25 +77,50 @@ export default function FixturesAndResultsPage({
 export const getServerSideProps: GetServerSideProps<
   FixturesPageProps
 > = async () => {
-  try {
-    const [fixturesJson, resultsJson] = await Promise.all([
-      fetchFixtures(1, 5),
-      fetchResults(),
-    ]);
-    return {
-      props: {
-        fixturesResponse: fixturesJson,
-        resultsResponse: resultsJson,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return {
-      props: {
-        fixturesResponse: null,
-        resultsResponse: null,
-        error: "Failed to load data",
-      },
-    };
-  }
+  const fetchers: ({
+    errorMsg: string;
+  } & (
+    | {
+        fn: typeof fetchFixtures;
+        key: "fixturesResponse";
+      }
+    | {
+        fn: typeof fetchResults;
+        key: "resultsResponse";
+      }
+  ))[] = [
+    {
+      fn: () => fetchFixtures(1, 5),
+      key: "fixturesResponse",
+      errorMsg: "Error fetching fixtures:",
+    },
+    {
+      fn: fetchResults,
+      key: "resultsResponse",
+      errorMsg: "Error fetching results:",
+    },
+  ];
+
+  const results = await Promise.allSettled(fetchers.map((f) => f.fn()));
+
+  const props: FixturesPageProps = {
+    fixturesResponse: null,
+    resultsResponse: null,
+  };
+
+  results.forEach((result, idx) => {
+    const { key, errorMsg } = fetchers[idx];
+    if (result.status === "fulfilled") {
+      if (key === "fixturesResponse") {
+        props.fixturesResponse = result.value as FixturesResponse;
+      } else if (key === "resultsResponse") {
+        props.resultsResponse = result.value as ResultsResponse;
+      }
+    } else {
+      console.error(errorMsg, result.reason);
+      props.error = "Failed to load data";
+    }
+  });
+
+  return { props };
 };

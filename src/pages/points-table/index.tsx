@@ -193,9 +193,7 @@ export default function PointsTablePage({
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const page = 1;
-  const limit = 10;
-  const data = await fetchPointsTable(page, limit);
+  const data = await fetchPointsTable(1, 10);
 
   return {
     props: {
