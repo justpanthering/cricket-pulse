@@ -1,40 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Cricket Pulse
 
-## Getting Started
+## Introduction
+Cricket pulse is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app), that scrapes the data sourced from [iplt20.com](iplt20.com) to showcase match fixtures, previous match results and points table.
 
-First, run the development server:
+## Next.js Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+1. The Pages Router methodology has been used to implement this project.
+2. All the pages take advantage of Server Side Rendering (SSR). Static Site Generation (SSG) has not been used in this case as it is best suited for content with static content, such as blog posts.
+3. The following apis have been created, that scrape content in the server and provide the response data to the client:
+    - `/api/fixtures`
+      - Query params:
+        - `page`: current page number
+        - `limit`: number of items per page
+    - `/api/results`
+      - Query params:
+        - `page`: current page number
+        - `limit`: number of items per page
+    - `/api/points-table`
+      - Query params:
+        - `page`: current page number
+        - `limit`: number of items per page
+
+## Caching
+
+1. `@tanstack/react-query`:
+    - `useInfiniteQuery` has been used for FixturesTimeline and ResultsTimeline api handling.
+    - `useQuery` has been used for PointsTable api handling.
+2. `React.memo`: FixturesTimeline and ResultsTimeline components have been memoized to prevent unnecessary re-rendering.
+
+## User Interface
+1. `Tailwind CSS` has been used for styling and mobile-first design.
+2. `shadcn` has been used for involving complex components, such as Carousel and Table.
+
+## Scraping
+
+### Challenges:
+The response from [iplt20.com](iplt20.com), when fetched using `node-fetch` or `puppeteer`, in the form of:
+
+```
+<html><head>
+<title>Access Denied</title>
+</head><body>
+<h1>Access Denied</h1>
+ 
+You don't have permission to access "http://www.iplt20.com/matches/fixtures" on this server.<p>
+Reference #18.c6792c31.1748662261.7613d077
+</p><p>https://errors.edgesuite.net/18.c6792c31.1748662261.7613d077</p>
+
+
+</body></html>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+suggests that the site is using `Akamai`'s bot protection, making the process of scraping not possible.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+However, in order to demonstrate the process of scraping in this project, the html files from [iplt20.com](iplt20.com) were downloaded and saved into the following files:
+  - `/src/html/fixtures.html`
+  - `/src/html/results.html`
+  - `/src/html/points-table.html`
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+The data was downloaded on `1st June 2025`, and therefore the website reflects stale data.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+Thereafter, `cheerio` has been used to scrape date from these html pages.
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Instructions
 
-## Learn More
+## Setup
 
-To learn more about Next.js, take a look at the following resources:
+To start the development server, run:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+```
+yarn install
+yarn dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
