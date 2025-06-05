@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { RefreshCcw, Trophy } from "lucide-react";
 import { useResultsInfiniteQuery } from "@/lib/queries";
 import Head from "next/head";
+import React from "react";
 
 type ResultsProps = {
   apiResponse: ResultsResponse | null;
@@ -31,7 +32,9 @@ function FixtureTeam({ team }: { team: Result["teams"][0] }) {
   );
 }
 
-export function ResultsTimeline({ apiResponse }: ResultsProps) {
+export const ResultsTimeline = React.memo(function ResultsTimeline({
+  apiResponse,
+}: ResultsProps) {
   const queryClient = useQueryClient();
   const {
     data,
@@ -116,4 +119,4 @@ export function ResultsTimeline({ apiResponse }: ResultsProps) {
       )}
     </>
   );
-}
+});

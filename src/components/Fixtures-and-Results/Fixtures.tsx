@@ -7,6 +7,7 @@ import { FixturesResponse } from "@/pages/api/fixtures";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFixturesInfiniteQuery } from "@/lib/queries";
 import Head from "next/head";
+import React from "react";
 
 type FixturesProps = { apiResponse: FixturesResponse | null };
 
@@ -29,7 +30,9 @@ function FixtureTeam({ team }: { team: Fixture["teams"][0] }) {
   );
 }
 
-export function FixturesTimeline({ apiResponse }: FixturesProps) {
+export const FixturesTimeline = React.memo(function FixturesTimeline({
+  apiResponse,
+}: FixturesProps) {
   const queryClient = useQueryClient();
   const {
     data,
@@ -112,4 +115,4 @@ export function FixturesTimeline({ apiResponse }: FixturesProps) {
       )}
     </>
   );
-}
+});
