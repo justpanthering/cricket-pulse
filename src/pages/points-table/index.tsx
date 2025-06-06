@@ -10,10 +10,10 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/pagination";
 import Image from "next/image";
-import { fetchPointsTable } from "@/lib/api";
 import { PointsTableResponse } from "../api/points-table";
 import { usePointsTableQuery } from "@/lib/queries";
 import Head from "next/head";
+import { getPointsData } from "@/utils/api/web-scraping";
 
 const LIMIT_OPTIONS = [3, 5, 10];
 
@@ -192,12 +192,26 @@ export default function PointsTablePage({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const data = await fetchPointsTable(1, 10);
+export const getServerSideProps: GetServerSideProps<
+  PointsTablePageProps
+> = async () => {
+  const page = 1;
+  const limit = 10;
+  const start = (page - 1) * limit;
+  const end = start + limit;
+
+  const pointsTable = getPointsData();
+  const paginatedPoints = pointsTable.slice(start, end);
 
   return {
     props: {
-      initialApiResponse: data,
+      initialApiResponse: {
+        data: paginatedPoints,
+        total: pointsTable.length,
+        page,
+        limit,
+        totalPages: Math.ceil(pointsTable.length / limit),
+      },
     },
   };
 };

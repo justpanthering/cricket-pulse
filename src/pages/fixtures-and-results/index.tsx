@@ -5,7 +5,7 @@ import { FixturesTimeline } from "@/components/Fixtures-and-Results/Fixtures";
 import { ResultsTimeline } from "@/components/Fixtures-and-Results/Results";
 import { ResultsResponse } from "../api/results";
 import { FixturesResponse } from "../api/fixtures";
-import { fetchFixtures, fetchResults } from "@/lib/api";
+import { getFixturesData, getResultsData } from "@/utils/api/web-scraping";
 
 type FixturesPageProps = {
   fixturesResponse: FixturesResponse | null;
@@ -77,50 +77,33 @@ export default function FixturesAndResultsPage({
 export const getServerSideProps: GetServerSideProps<
   FixturesPageProps
 > = async () => {
-  const fetchers: ({
-    errorMsg: string;
-  } & (
-    | {
-        fn: typeof fetchFixtures;
-        key: "fixturesResponse";
-      }
-    | {
-        fn: typeof fetchResults;
-        key: "resultsResponse";
-      }
-  ))[] = [
-    {
-      fn: () => fetchFixtures(1, 5),
-      key: "fixturesResponse",
-      errorMsg: "Error fetching fixtures:",
-    },
-    {
-      fn: fetchResults,
-      key: "resultsResponse",
-      errorMsg: "Error fetching results:",
-    },
-  ];
+  const page = 1;
+  const limit = 5;
+  const start = (page - 1) * limit;
+  const end = start + limit;
 
-  const results = await Promise.allSettled(fetchers.map((f) => f.fn()));
+  const fixtures = getFixturesData();
+  const paginatedFixtures = fixtures.slice(start, end);
 
-  const props: FixturesPageProps = {
-    fixturesResponse: null,
-    resultsResponse: null,
+  const results = getResultsData();
+  const paginatedResults = results.slice(start, end);
+
+  return {
+    props: {
+      fixturesResponse: {
+        data: paginatedFixtures,
+        total: fixtures.length,
+        page,
+        limit,
+        totalPages: Math.ceil(fixtures.length / limit),
+      },
+      resultsResponse: {
+        data: paginatedResults,
+        total: results.length,
+        page,
+        limit,
+        totalPages: Math.ceil(results.length / limit),
+      },
+    },
   };
-
-  results.forEach((result, idx) => {
-    const { key, errorMsg } = fetchers[idx];
-    if (result.status === "fulfilled") {
-      if (key === "fixturesResponse") {
-        props.fixturesResponse = result.value as FixturesResponse;
-      } else if (key === "resultsResponse") {
-        props.resultsResponse = result.value as ResultsResponse;
-      }
-    } else {
-      console.error(errorMsg, result.reason);
-      props.error = "Failed to load data";
-    }
-  });
-
-  return { props };
 };
