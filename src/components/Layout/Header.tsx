@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useState, createContext } from "react";
 import Link from "next/link";
 import clsx from "clsx";
 import { Menu, X } from "lucide-react";
 import { NavLinks } from "./NavLinks";
 
+export const CloseMenuContext = createContext<(() => void) | undefined>(
+  undefined
+);
+
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const closeMenu = () => setMenuOpen(false);
+
   return (
     <nav className="flex justify-center px-4 py-4 bg-[#f8f9fa] border-b border-[#eaeaea] text-gray-800 shadow-md">
       <div className="container flex justify-between items-center">
@@ -38,7 +45,7 @@ export function Header() {
             "absolute inset-0 bg-black transition-opacity duration-300",
             menuOpen ? "opacity-50" : "opacity-0"
           )}
-          onClick={() => setMenuOpen(false)}
+          onClick={closeMenu}
         />
         {/* Side Menu */}
         <div
@@ -48,13 +55,12 @@ export function Header() {
           )}
         >
           {/* Close Side Menu Button */}
-          <button
-            className="self-end mb-6 cursor-pointer"
-            onClick={() => setMenuOpen(false)}
-          >
+          <button className="self-end mb-6 cursor-pointer" onClick={closeMenu}>
             <X size={24} />
           </button>
-          <NavLinks />
+          <CloseMenuContext.Provider value={closeMenu}>
+            <NavLinks />
+          </CloseMenuContext.Provider>
         </div>
       </div>
     </nav>
