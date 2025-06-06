@@ -3,6 +3,8 @@
 ## Introduction
 Cricket pulse is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app), that scrapes the data sourced from [iplt20.com](iplt20.com) to showcase match fixtures, previous match results and points table.
 
+The website can be viewed at: [https://cricket-pulse-git-main-justpantherings-projects.vercel.app/](https://cricket-pulse-git-main-justpantherings-projects.vercel.app/)
+
 ## Next.js Features
 
 1. The Pages Router methodology has been used to implement this project.
