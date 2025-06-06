@@ -14,6 +14,7 @@ import { PointsTableResponse } from "../api/points-table";
 import { usePointsTableQuery } from "@/lib/queries";
 import Head from "next/head";
 import { getPointsData } from "@/utils/api/web-scraping";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const LIMIT_OPTIONS = [3, 5, 10];
 
@@ -90,64 +91,95 @@ export default function PointsTablePage({
             ))}
           </select>
         </div>
-        {isLoading || isFetching ? (
-          <div className="text-center">Loading...</div>
-        ) : (
-          <table className="min-w-full border border-gray-200 rounded">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="px-2 py-2">Pos</th>
-                <th className="px-2 py-2">Team</th>
-                <th className="px-2 py-2">P</th>
-                <th className="px-2 py-2">W</th>
-                <th className="px-2 py-2">L</th>
-                <th className="px-2 py-2">NR</th>
-                <th className="px-2 py-2">NRR</th>
-                <th className="px-2 py-2">Pts</th>
-                <th className="px-2 py-2">Recent</th>
-              </tr>
-            </thead>
-            <tbody>
-              {points.map((row) => (
-                <tr key={row.team.name} className="text-center border-t">
-                  <td className="px-2 py-2">{row.pos}</td>
-                  <td className="px-2 py-2 flex flex-col md:flex-row items-center gap-2 justify-center">
-                    {row.team.logo && (
-                      <Image
-                        src={row.team.logo}
-                        alt={row.team.name}
-                        width={56}
-                        height={56}
-                        className="md:w-14 md:h-14"
-                      />
-                    )}
-                    <span>{row.team.name}</span>
-                  </td>
-                  <td className="px-2 py-2">{row.p}</td>
-                  <td className="px-2 py-2">{row.w}</td>
-                  <td className="px-2 py-2">{row.l}</td>
-                  <td className="px-2 py-2">{row.nr}</td>
-                  <td className="px-2 py-2">{row.nrr}</td>
-                  <td className="px-2 py-2">{row.pts}</td>
-                  <td className="px-2 py-2">
-                    {row.recentForm.map((f, i) => (
-                      <span
-                        key={row.team.name + "-recentForm-" + i}
-                        className={`inline-block w-5 h-5 rounded-full text-xs font-bold mx-0.5 ${
-                          f === "W"
-                            ? "bg-green-200 text-green-800"
-                            : "bg-red-200 text-red-800"
-                        }`}
-                      >
-                        {f}
-                      </span>
-                    ))}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+        <table className="min-w-full border border-gray-200 rounded">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="px-2 py-2">Pos</th>
+              <th className="px-2 py-2">Team</th>
+              <th className="px-2 py-2">P</th>
+              <th className="px-2 py-2">W</th>
+              <th className="px-2 py-2">L</th>
+              <th className="px-2 py-2">NR</th>
+              <th className="px-2 py-2">NRR</th>
+              <th className="px-2 py-2">Pts</th>
+              <th className="px-2 py-2">Recent</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading || isFetching
+              ? [...Array(limit)].map((_, idx) => (
+                  <tr key={idx} className="text-center border-t">
+                    <td className="px-2 py-2">
+                      <Skeleton className="h-5 w-8 mx-auto" />
+                    </td>
+                    <td className="px-2 py-2 flex flex-col md:flex-row items-center gap-2 justify-center">
+                      <Skeleton className="h-10 w-10 rounded-full" />
+                      <Skeleton className="h-5 w-20" />
+                    </td>
+                    <td className="px-2 py-2">
+                      <Skeleton className="h-5 w-8 mx-auto" />
+                    </td>
+                    <td className="px-2 py-2">
+                      <Skeleton className="h-5 w-8 mx-auto" />
+                    </td>
+                    <td className="px-2 py-2">
+                      <Skeleton className="h-5 w-8 mx-auto" />
+                    </td>
+                    <td className="px-2 py-2">
+                      <Skeleton className="h-5 w-8 mx-auto" />
+                    </td>
+                    <td className="px-2 py-2">
+                      <Skeleton className="h-5 w-12 mx-auto" />
+                    </td>
+                    <td className="px-2 py-2">
+                      <Skeleton className="h-5 w-8 mx-auto" />
+                    </td>
+                    <td className="px-2 py-2 flex justify-center gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Skeleton key={i} className="h-5 w-5 rounded-full" />
+                      ))}
+                    </td>
+                  </tr>
+                ))
+              : points.map((row) => (
+                  <tr key={row.team.name} className="text-center border-t">
+                    <td className="px-2 py-2">{row.pos}</td>
+                    <td className="px-2 py-2 flex flex-col md:flex-row items-center gap-2 justify-center">
+                      {row.team.logo && (
+                        <Image
+                          src={row.team.logo}
+                          alt={row.team.name}
+                          width={56}
+                          height={56}
+                          className="md:w-14 md:h-14"
+                        />
+                      )}
+                      <span>{row.team.name}</span>
+                    </td>
+                    <td className="px-2 py-2">{row.p}</td>
+                    <td className="px-2 py-2">{row.w}</td>
+                    <td className="px-2 py-2">{row.l}</td>
+                    <td className="px-2 py-2">{row.nr}</td>
+                    <td className="px-2 py-2">{row.nrr}</td>
+                    <td className="px-2 py-2">{row.pts}</td>
+                    <td className="px-2 py-2">
+                      {row.recentForm.map((f, i) => (
+                        <span
+                          key={row.team.name + "-recentForm-" + i}
+                          className={`inline-block w-5 h-5 rounded-full text-xs font-bold mx-0.5 ${
+                            f === "W"
+                              ? "bg-green-200 text-green-800"
+                              : "bg-red-200 text-red-800"
+                          }`}
+                        >
+                          {f}
+                        </span>
+                      ))}
+                    </td>
+                  </tr>
+                ))}
+          </tbody>
+        </table>
         <Pagination className="mt-6">
           <PaginationContent>
             <PaginationItem>
