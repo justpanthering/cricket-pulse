@@ -82,13 +82,14 @@ Timeline.displayName = "Timeline";
  * @interface TimelineItemProps
  * @extends {Omit<HTMLMotionProps<"li">, "ref">}
  */
-interface TimelineItemProps extends Omit<HTMLMotionProps<"li">, "ref"> {
+interface TimelineItemProps
+  extends Omit<HTMLMotionProps<"li">, "ref" | "title"> {
   /** Date string for the timeline item */
   date?: string;
   /** Title of the timeline item */
-  title?: ReactNode | (() => ReactNode);
+  title?: ReactNode;
   /** Description text */
-  description?: ReactNode | (() => ReactNode);
+  description?: ReactNode;
   /** Custom icon element */
   icon?: React.ReactNode;
   /** Color theme for the icon */
@@ -117,7 +118,7 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
       icon,
       iconColor,
       status = "completed",
-      connectorColor,
+      // connectorColor,
       showConnector = true,
       iconsize,
       loading,
@@ -392,7 +393,7 @@ TimelineTitle.displayName = "TimelineTitle";
 const TimelineIcon = ({
   icon,
   color = "primary",
-  status = "completed",
+  // status = "completed",
   iconSize = "md",
 }: {
   icon?: React.ReactNode;

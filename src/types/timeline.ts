@@ -10,11 +10,11 @@ export type TimelineColor =
   | "destructive";
 
 export interface TimelineElement {
-  id: ReactNode | (() => ReactNode);
+  id: ReactNode;
   date: string;
-  title: ReactNode | (() => ReactNode);
-  description: ReactNode | (() => ReactNode);
-  icon?: ReactNode | (() => ReactNode);
+  title: ReactNode;
+  description: ReactNode;
+  icon?: ReactNode;
   status?: TimelineStatus;
   color?: TimelineColor;
   size?: TimelineSize;

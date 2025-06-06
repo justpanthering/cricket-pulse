@@ -43,7 +43,7 @@ export const TimelineLayout = ({
             description={item.description}
             icon={
               typeof item.icon === "function"
-                ? item.icon()
+                ? (item.icon as () => React.ReactNode)()
                 : item.icon || customIcon
             }
             iconColor={item.color || iconColor}
