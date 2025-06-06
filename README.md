@@ -28,6 +28,10 @@ Cricket pulse is a [Next.js](https://nextjs.org) project bootstrapped with [`cre
     - `useQuery` has been used for PointsTable api handling.
 2. `React.memo`: FixturesTimeline and ResultsTimeline components have been memoized to prevent unnecessary re-rendering.
 
+## Live Data
+
+`@tanstack/react-query`'s `refetchInterval` has been used for data polling to ensure data is refreshed periodically.
+
 ## User Interface
 1. `Tailwind CSS` has been used for styling and mobile-first design.
 2. `shadcn` has been used for involving complex components, such as Carousel and Table.
